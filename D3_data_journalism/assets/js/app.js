@@ -55,6 +55,19 @@ d3.csv(file, function(data) {
     chartGroup.append("g")
         .call(leftAxis);
 
+    // Step 6: Initialize tool tip
+    // ==============================
+    var toolTip = d3.tip()
+      .attr("class", "d3-tip")
+      .offset([40, -75])
+      .html(function(d) {
+        return (`${d.state}<br>Poverty (%): ${d.poverty}<br>Healthcare (%): ${d.healthcare}`);
+      });
+
+    // Step 7: Create tooltip in the chart
+    // ==============================
+    chartGroup.call(toolTip);
+
     // Step 5: Create Circles
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
@@ -75,30 +88,20 @@ d3.csv(file, function(data) {
         .attr("y", d => yLinearScale(d.healthcare)+5)
         .attr("x", d => xLinearScale(d.poverty))
         .attr("class", "stateText")
-        .text(d => d.abbr);
+        .text(d => d.abbr)
+        .on('mouseover', toolTip.show)
+        .on('mouseout', toolTip.hide);
 
-    // Step 6: Initialize tool tip
-    // ==============================
-    var toolTip = d3.tip()
-      .attr("class", "d3-tip")
-      .offset([80, -60])
-      .html(function(d) {
-        return (`${d.state}<br>Poverty (%): ${d.poverty}<br>Healthcare (%): ${d.healthcare}`);
-      });
 
-    // Step 7: Create tooltip in the chart
-    // ==============================
-    chartGroup.call(toolTip);
-
-    // Step 8: Create event listeners to display and hide the tooltip
-    // ==============================
-    circlesGroup.on("mouseover", function(data) {
-      toolTip.show(data, this);
-    })
-      // onmouseout event
-      .on("mouseout", function(data, index) {
-        toolTip.hide(data);
-      });
+    // // Step 8: Create event listeners to display and hide the tooltip
+    // // ==============================
+    // circlesGroup.on("mouseover", function(data) {
+    //   toolTip.show(data, this);
+    // })
+    //   // onmouseout event
+    //   .on("mouseout", function(data, index) {
+    //     toolTip.hide(data);
+    //   });
 
     
     // Create axes labels
